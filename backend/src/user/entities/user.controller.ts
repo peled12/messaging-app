@@ -1,11 +1,10 @@
 import { User } from '@prisma/client';
 import { UserService } from './user.service';
 import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
-import { Response, Request } from 'express';
 
-// NOTE: her are the routes. change the code to customize it (this code is just temp)
+// NOTE: here are the routes. change the code to customize it (this code is just temp)
 
-Controller('users');
+@Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 

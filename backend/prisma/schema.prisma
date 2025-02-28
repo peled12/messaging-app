@@ -7,6 +7,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+/**
+ * TODO: adjust the schema; this is a temp
+ */
+
 model User {
   id       Int    @id @default(autoincrement())
   username String @unique

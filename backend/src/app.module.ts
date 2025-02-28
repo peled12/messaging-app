@@ -4,9 +4,9 @@ import {
   NestModule,
   RequestMethod,
 } from '@nestjs/common';
-import { UserModule } from './user/user.module';
-import { ChatModule } from './chat/chat.module';
-import { LoggerMiddleware } from './middleware/logger.middleware';
+import { UserModule } from './user/entities/user.module';
+import { ChatModule } from './chat/entities/chat.module';
+import { LoggerMiddleware } from './common/middleware/logger.middleware';
 
 @Module({
   imports: [UserModule, ChatModule],
