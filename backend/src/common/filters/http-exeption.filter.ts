@@ -13,7 +13,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const status =
       exception instanceof HttpException ? exception.getStatus() : 500;
 
-    // Custom error handling logic
+    // custom error handling logic
     const message = exception.message || 'Internal Server Error';
 
     console.error('Caught Exception:', exception);

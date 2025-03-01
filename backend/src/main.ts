@@ -5,6 +5,7 @@ import { HttpExceptionFilter } from './common/filters/http-exeption.filter';
 /*
   TODO: learn from this vid: https://youtu.be/ZLp92Iw0rkI?t=157
   TODO: switch to a different database (to save data from neon)
+  TODO: create authentication logic (including all the security stuff)
 */
 
 async function bootstrap() {
