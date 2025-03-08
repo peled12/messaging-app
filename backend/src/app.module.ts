@@ -7,9 +7,10 @@ import {
 import { UserModule } from './user/entities/user.module';
 import { ChatModule } from './chat/entities/chat.module';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [UserModule, ChatModule],
+  imports: [UserModule, ChatModule, AuthModule],
   controllers: [],
   providers: [],
 })
