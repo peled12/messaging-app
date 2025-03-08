@@ -20,10 +20,22 @@ model User {
 }
 
 model Chat {
-  id         String   @id @default(uuid())
-  created_at DateTime @default(now())
+  id         String    @id @default(uuid())
+  created_at DateTime  @default(now())
   chatters   Int[]
-  messages   Json
+  messages   Message[]
 
   @@map("chats")
+}
+
+model Message {
+  id            Int      @id @default(autoincrement())
+  sender        Int
+  message       String
+  deleted       Boolean  @default(false)
+  date_sent     DateTime
+  chatId        String
+  replied_index Int?
+  read_by       Int[]
+  chat          Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
 }

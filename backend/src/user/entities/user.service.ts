@@ -7,6 +7,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import { UpdateUserDto } from '../dto/update-user.dto';
+import { CreateUserDto } from '../dto/create-user.dto';
 
 // TODO: change the code and customize it
 
@@ -65,7 +67,8 @@ export class UserService {
     }
   }
 
-  async getUser(name: string): Promise<User | null> {
+  // get user by username
+  async getUserbyUsername(name: string) {
     const user: User = await this.table.findUnique({
       where: { username: name },
     });
@@ -78,13 +81,27 @@ export class UserService {
     return user;
   }
 
-  async createUser(data: User): Promise<User> {
+  // get user by id
+  async getUserById(id: number) {
+    const user: User = await this.table.findUnique({
+      where: { id: id },
+    });
+
+    // check if the user exists
+    if (!user) {
+      throw new NotFoundException(`User with id: ${id} not found`);
+    }
+
+    return user;
+  }
+
+  async createUser(data: CreateUserDto) {
     await this.validateUser(data.username, data.password); // validate before creating
 
     return this.table.create({ data });
   }
 
-  async updateUser(id: number, data: User): Promise<User> {
+  async updateUser(id: number, data: UpdateUserDto) {
     await this.validateUserName(data.username); // validate new username before updating
 
     return this.table.update({ where: { id: id }, data: data });

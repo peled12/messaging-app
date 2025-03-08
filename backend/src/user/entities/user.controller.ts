@@ -1,4 +1,3 @@
-import { User } from '@prisma/client';
 import { UserService } from './user.service';
 import {
   Body,
@@ -8,27 +7,35 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  ValidationPipe,
 } from '@nestjs/common';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { UpdateUserDto } from '../dto/update-user.dto';
 
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get(':username')
-  findOne(@Param('username') username: string): Promise<User | null> {
-    return this.userService.getUser(username);
+  @Get(':id')
+  findOneById(@Param('id', ParseIntPipe) id: number) {
+    return this.userService.getUserById(id);
+  }
+
+  @Get('username/:username') // specific route for username
+  findOneByUsername(@Param('username') username: string) {
+    return this.userService.getUserbyUsername(username);
   }
 
   @Post()
-  async createOne(@Body() data: User): Promise<User> {
-    return this.userService.createUser(data);
+  async createOne(@Body(ValidationPipe) user: CreateUserDto) {
+    return this.userService.createUser(user);
   }
 
   @Patch(':id')
   async updateOne(
     @Param('id', ParseIntPipe) id: number,
-    @Body() data: User,
-  ): Promise<User> {
+    @Body(ValidationPipe) data: UpdateUserDto,
+  ) {
     return this.userService.updateUser(id, data);
   }
 }
