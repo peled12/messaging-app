@@ -23,6 +23,10 @@ export class CreateChatDto {
   @ValidateNested({ each: true })
   @Type(() => MessageDto)
   messages: MessageDto[];
+
+  @IsString()
+  @IsOptional()
+  group_title: string;
 }
 
 class MessageDto {
