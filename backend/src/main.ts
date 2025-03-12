@@ -8,6 +8,11 @@ async function bootstrap() {
   // apply the global exception filter
   app.useGlobalFilters(new HttpExceptionFilter());
 
+  app.enableCors({
+    origin: process.env.FRONTEND_URL,
+    methods: 'POST, GET, PATCH, PUT, DELETE',
+  });
+
   const port = process.env.PORT || 5050; // default port
 
   await app.listen(port);

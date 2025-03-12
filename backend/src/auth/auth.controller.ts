@@ -29,6 +29,7 @@ export class AuthController {
 
   @Post('signup')
   signUp(@Body(ValidationPipe) user: AuthPayloadDto) {
+    console.log('hi');
     return this.authService.createUser(user);
   }
 

@@ -4,7 +4,7 @@ import CustomForm from "../CustomForm";
 const page = () => {
   return (
     <div className="flex w-full">
-      <div className="flex mt-16 w-full justify-around">
+      <div className="flex mt-16 w-full justify-center gap-[15vw]">
         <CustomForm title="Sign Up" />
         <div className="flex flex-col gap-7 items-center">
           <h1 className="text-8xl max-w-2xl text-center">
@@ -15,6 +15,7 @@ const page = () => {
           </h6>
         </div>
       </div>
+      <div className="custom-loader"></div>
     </div>
   );
 };
