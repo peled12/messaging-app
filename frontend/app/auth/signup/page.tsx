@@ -1,8 +1,11 @@
+import "../auth.css";
+import CustomForm from "../CustomForm";
+
 const page = () => {
   return (
     <div className="flex w-full">
       <div className="flex mt-16 w-full justify-around">
-        <div className="flex flex-col gap-3 items-center"></div>
+        <CustomForm title="Sign Up" />
         <div className="flex flex-col gap-7 items-center">
           <h1 className="text-8xl max-w-2xl text-center">
             Welcome To The Messaging App
