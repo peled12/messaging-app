@@ -3,7 +3,7 @@ import CustomForm from "../CustomForm";
 
 const page = () => {
   return (
-    <div className="flex w-full">
+    <div className="flex w-full px-12">
       <div className="flex mt-16 w-full justify-center gap-[15vw]">
         <CustomForm title="Sign Up" />
         <div className="flex flex-col gap-7 items-center">

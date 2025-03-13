@@ -9,7 +9,10 @@ import {
 } from "../functions/loaderHandler";
 import { useRouter } from "next/navigation";
 
-// TODO: handle jwt
+import useUserData from "../customHooks/useUserData";
+
+import { FaRegEyeSlash } from "react-icons/fa";
+import { FaRegEye } from "react-icons/fa";
 
 const CustomForm: FC<{ title: "Sign Up" | "Login" }> = ({ title }) => {
   const [password, setpassword] = useState<string>("");
@@ -18,7 +21,11 @@ const CustomForm: FC<{ title: "Sign Up" | "Login" }> = ({ title }) => {
   const [usernameError, setusernameError] = useState<boolean>(false);
   const [passwordError, setpasswordError] = useState<boolean>(false);
 
+  const [isPasswordVisible, setisPasswordVisible] = useState<boolean>(false);
+
   const router = useRouter();
+
+  const { saveJwt } = useUserData();
 
   const handleSubmit = (e: React.FormEvent): void => {
     // reset the error flags
@@ -34,8 +41,10 @@ const CustomForm: FC<{ title: "Sign Up" | "Login" }> = ({ title }) => {
 
     let isError: boolean = false; // init the error flag
 
+    const trimmedUsername = username.trim(); // get the trimmed username
+
     // ensure valid username
-    if (username.length < 4 || username.length > 16) {
+    if (trimmedUsername.length < 4 || trimmedUsername.length > 16) {
       setusernameError(true);
       isError = true;
     }
@@ -58,10 +67,12 @@ const CustomForm: FC<{ title: "Sign Up" | "Login" }> = ({ title }) => {
       const res: AxiosResponse = await axios.post(
         (process.env.NEXT_PUBLIC_API_URL as string) + "/auth/signup",
         {
-          username: username,
+          username: trimmedUsername,
           password: password,
         }
       );
+
+      saveJwt(res.data); // save the jwt
 
       console.log(res.data);
 
@@ -71,7 +82,7 @@ const CustomForm: FC<{ title: "Sign Up" | "Login" }> = ({ title }) => {
       router.replace("/"); // navigate to home page
     } catch (error) {
       // unsuccessful request
-      endAniFail(loader);
+      await endAniFail(loader);
 
       if (axios.isAxiosError(error)) {
         // if the error has a response
@@ -85,10 +96,52 @@ const CustomForm: FC<{ title: "Sign Up" | "Login" }> = ({ title }) => {
     }
   };
 
-  const handleLogin = async (e: React.FormEvent): Promise<void> => {};
+  const handleLogin = async (e: React.FormEvent): Promise<void> => {
+    e.preventDefault();
+
+    // ensure both username and password were inserted
+    if (!username.trim() || !password) return;
+
+    // start the animation
+    const loader: HTMLDivElement = document.querySelector(".custom-loader")!;
+    startAni(loader);
+
+    // make the signup request
+    try {
+      const res: AxiosResponse = await axios.post(
+        (process.env.NEXT_PUBLIC_API_URL as string) + "/auth/login",
+        {
+          username: username,
+          password: password,
+        }
+      );
+
+      saveJwt(res.data); // save the jwt
+
+      console.log(res.data);
+
+      // successful request
+      await endAniSuccess(loader);
+
+      router.replace("/"); // navigate to home page
+    } catch (error) {
+      // unsuccessful request
+      await endAniFail(loader);
+
+      if (axios.isAxiosError(error)) {
+        // if the error has a response
+
+        if (error.response?.data.message === "Invalid Credentials") {
+          alert("Ensure correct username and password");
+        }
+      }
+
+      console.error(error);
+    }
+  };
 
   return (
-    <div className="mt-[10vh]">
+    <div className="mt-[5vh] mb-12">
       <form
         className="flex flex-col gap-3 items-center p-4 auth-form"
         onSubmit={handleSubmit}
@@ -115,9 +168,22 @@ const CustomForm: FC<{ title: "Sign Up" | "Login" }> = ({ title }) => {
             </p>
           </div>
           <div>
-            <h2 className="text-xl mb-2">Password</h2>
+            <h2 className="text-xl mb-2 flex items-center justify-between">
+              Password{" "}
+              {isPasswordVisible ? (
+                <FaRegEye
+                  className="scale-90 cursor-pointer"
+                  onClick={() => setisPasswordVisible(false)}
+                />
+              ) : (
+                <FaRegEyeSlash
+                  className="scale-90 cursor-pointer"
+                  onClick={() => setisPasswordVisible(true)}
+                />
+              )}
+            </h2>
             <input
-              type="password"
+              type={isPasswordVisible ? "text" : "password"}
               placeholder="Enter password here"
               name="password"
               value={password}
