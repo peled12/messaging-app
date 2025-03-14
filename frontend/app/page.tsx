@@ -6,7 +6,7 @@ const Home = () => {
     <div className="flex w-full justify-center gap-[12vw] mb-12">
       <div className="flex flex-col gap-3 items-center mt-32">
         <p className="text-xl">Search for existing users to message them!</p>
-        <SearchBar />
+        <SearchBar placeHolder="e.g. Peled" />
       </div>
       <div className="flex flex-col gap-7 items-center max-w-[50vw] relative top-[50vh] translate-y-[calc(-50%-60px)]">
         <h1 className="text-9xl max-w-4xl text-center">The Messaging App</h1>

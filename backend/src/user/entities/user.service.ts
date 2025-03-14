@@ -24,7 +24,9 @@ export class UserService {
       throw new NotFoundException(`User with username: ${name} not found`);
     }
 
-    return user;
+    const { password, ...userWithoutPassword } = user;
+
+    return userWithoutPassword;
   }
 
   // get user by id

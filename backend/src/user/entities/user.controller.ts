@@ -1,5 +1,13 @@
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserService } from './user.service';
-import { Body, Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  UseGuards,
+} from '@nestjs/common';
 
 @Controller('users')
 export class UserController {

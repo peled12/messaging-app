@@ -13,7 +13,6 @@ const page = () => {
           </h6>
         </div>
       </div>
-      <div className="custom-loader"></div>
     </div>
   );
 };
