@@ -11,6 +11,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { RedisService } from 'src/redis/redis.service';
 
 // constants
 const SALT_ROUNDS = 10;
@@ -20,8 +21,9 @@ export class AuthService {
   private readonly table: Prisma.UserDelegate;
 
   constructor(
-    private prisma: PrismaService,
-    private jwtServise: JwtService,
+    private readonly prisma: PrismaService,
+    private readonly jwtServise: JwtService,
+    private readonly redisService: RedisService,
   ) {
     this.table = this.prisma.user;
   }
@@ -73,5 +75,26 @@ export class AuthService {
     }
 
     return this.table.update({ where: { id }, data });
+  }
+
+  // logout function to blacklist JWT
+  async logout(token: string | null) {
+    if (!token)
+      throw new HttpException('Token is required', HttpStatus.BAD_REQUEST);
+
+    const decoded: any = this.jwtServise.decode(token); // decode the token
+
+    if (!decoded) {
+      throw new HttpException('Invalid Token', HttpStatus.UNAUTHORIZED);
+    }
+
+    // set the token in Redis blacklist with expiration time
+    await this.redisService.setValue(
+      `blacklist:${token}`,
+      token,
+      decoded.exp - Math.floor(Date.now() / 1000), // untill the token is expired
+    );
+
+    return { message: 'Logged out successfully!' };
   }
 }

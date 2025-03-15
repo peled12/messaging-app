@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   ParseIntPipe,
   Patch,
@@ -32,18 +34,25 @@ export class AuthController {
     return this.authService.createUser(user);
   }
 
-  @Get('status')
-  @UseGuards(JwtAuthGuard)
-  status(@Req() req: Request) {
-    console.log('inside status');
-    return req.user;
-  }
-
   @Patch(':id')
   async updateUser(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationPipe) data: UpdateUserDto,
   ) {
     return this.authService.updateUser(id, data);
+  }
+
+  @Post('logout')
+  @UseGuards(JwtAuthGuard)
+  async logout(@Req() req: Request) {
+    const token = req.headers['authorization'].split(' ')[1]; // extract the JWT from authorization
+
+    return this.authService.logout(token);
+  }
+
+  @Get('status')
+  status(@Req() req: Request) {
+    console.log('inside status');
+    return req.user;
   }
 }

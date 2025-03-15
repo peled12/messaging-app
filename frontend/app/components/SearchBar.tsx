@@ -12,7 +12,10 @@ import {
   startAni,
 } from "../functions/loaderHandler";
 
-import { UNAUTHORIZED_ERROR, NOT_FOUND_ERROR } from "../contants/errorCodes";
+import {
+  UNAUTHORIZED_ERROR,
+  NOT_FOUND_ERROR,
+} from "../contants/httpStatusCodes";
 
 /*
   TODO: handle prefetching

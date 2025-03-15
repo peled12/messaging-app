@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 // define the types for the returned hook
 interface UseUserData {
+  logout: (message?: string) => void;
   saveJwt: (jwtToken: string) => void;
   getJwt: () => string | null;
   user: User | null;
@@ -16,6 +17,18 @@ const useUserData = (): UseUserData => {
   const [jwt, setJwt] = useState<string | null>(null);
 
   const router = useRouter();
+
+  // logs out
+  const logout = (message?: string) => {
+    setJwt(null);
+    setUser(null);
+
+    localStorage.removeItem("jwt"); // remove JWT from localStorage
+
+    if (message) alert(message);
+
+    router.push("/auth/login"); // go to login
+  };
 
   // saves the JWT in localStorage
   const saveJwt = (jwtToken: string) => {
@@ -59,14 +72,15 @@ const useUserData = (): UseUserData => {
 
   // load the JWT from localStorage when the component mounts
   useEffect(() => {
-    const storedJwt = getJwt();
+    const storedJwt = localStorage.getItem("jwt");
+    setJwt(storedJwt);
     if (storedJwt) {
       const decodedUser: User | null = decodeJwt(storedJwt);
       setUser(decodedUser);
     }
   }, []);
 
-  return { saveJwt, getJwt, user, jwt };
+  return { logout, saveJwt, getJwt, user, jwt };
 };
 
 export default useUserData;

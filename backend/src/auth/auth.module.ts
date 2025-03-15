@@ -6,6 +6,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { RedisModule } from 'src/redis/redis.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '1h' },
     }),
+    RedisModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, PrismaService, LocalStrategy, JwtStrategy],
