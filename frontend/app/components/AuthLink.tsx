@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import useUserData from "../customHooks/useUserData";
 import axios, { AxiosResponse } from "axios";
-import { SUCCESSFULL_REQUEST } from "../contants/httpStatusCodes";
+import { SUCCESSFULL_POST } from "../contants/httpStatusCodes";
 import { useEffect, useState } from "react";
 
 /*
@@ -28,7 +28,7 @@ function AuthLink() {
         { headers: { Authorization: `Bearer ${jwt}` } }
       );
 
-      if (res.status === SUCCESSFULL_REQUEST) {
+      if (res.status === SUCCESSFULL_POST) {
         logout(res.data.message);
       }
     } catch (err) {

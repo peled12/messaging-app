@@ -1,4 +1,5 @@
 import NavBar from "./components/NavBar";
+import { UserProvider } from "./contexts/UserContexts";
 import "./globals.css";
 
 /*
@@ -13,8 +14,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <NavBar />
-        {children}
+        <UserProvider>
+          <NavBar />
+          {children}
+        </UserProvider>
         <div className="custom-loader"></div>
       </body>
     </html>

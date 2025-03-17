@@ -118,8 +118,6 @@ const CustomForm: FC<{ title: "Sign Up" | "Login" }> = ({ title }) => {
 
       saveJwt(res.data); // save the jwt
 
-      console.log(res.data);
-
       // successful request
       await endAniSuccess(loader);
 

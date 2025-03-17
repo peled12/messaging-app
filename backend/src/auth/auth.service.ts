@@ -22,7 +22,7 @@ export class AuthService {
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly jwtServise: JwtService,
+    private readonly jwtService: JwtService,
     private readonly redisService: RedisService,
   ) {
     this.table = this.prisma.user;
@@ -47,7 +47,11 @@ export class AuthService {
     }
 
     const { password: foundPassword, ...user } = foundUser;
-    return this.jwtServise.sign(user); // create a web token for the user
+    const token: string = this.jwtService.sign(user); // create a web token for the user
+
+    this.addTokenToRedisSession(token); // add the token to redis session
+
+    return token;
   }
 
   async createUser(data: AuthPayloadDto) {
@@ -65,7 +69,11 @@ export class AuthService {
     await this.table.create({ data: { ...data, password: hashedPassword } }); // create the user
 
     const { password: foundPassword, ...user } = data;
-    return this.jwtServise.sign(user); // create a web token for the user
+    const token: string = this.jwtService.sign(user); // create a web token for the user
+
+    this.addTokenToRedisSession(token); // add the token to redis session
+
+    return token;
   }
 
   async updateUser(id: number, data: UpdateUserDto) {
@@ -82,7 +90,7 @@ export class AuthService {
     if (!token)
       throw new HttpException('Token is required', HttpStatus.BAD_REQUEST);
 
-    const decoded: any = this.jwtServise.decode(token); // decode the token
+    const decoded: any = this.jwtService.decode(token); // decode the token
 
     if (!decoded) {
       throw new HttpException('Invalid Token', HttpStatus.UNAUTHORIZED);
@@ -96,5 +104,43 @@ export class AuthService {
     );
 
     return { message: 'Logged out successfully!' };
+  }
+
+  // local function that adds a token to redis session
+  async addTokenToRedisSession(token: string) {
+    if (!token) {
+      throw new HttpException('Token is required', HttpStatus.BAD_REQUEST);
+    }
+
+    // decode the JWT token
+    const decoded: any = this.jwtService.decode(token);
+
+    if (!decoded || !decoded.exp) {
+      throw new HttpException('Invalid Token', HttpStatus.UNAUTHORIZED);
+    }
+
+    // get the remaining time until token expires
+    const expirationTime = decoded.exp - Math.floor(Date.now() / 1000);
+
+    // Store the token in Redis with the expiration time
+    try {
+      await this.redisService.setValue(
+        `session:${token}`,
+        token,
+        expirationTime,
+      );
+
+      console.log(
+        `Token stored in Redis with expiration time: ${expirationTime}s`,
+      );
+
+      return { message: 'Token added to Redis session successfully' };
+    } catch (error) {
+      console.error('Error adding token to Redis session', error);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }

@@ -43,7 +43,6 @@ export class AuthController {
   }
 
   @Post('logout')
-  @UseGuards(JwtAuthGuard)
   async logout(@Req() req: Request) {
     const token = req.headers['authorization'].split(' ')[1]; // extract the JWT from authorization
 
